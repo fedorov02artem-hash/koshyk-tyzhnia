@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { DISH_BY_ID } from '../domain/dishes'
-import { dishNutrition } from '../domain/nutrition'
+import { dishNutrition, tracksCalories } from '../domain/nutrition'
 import { averageDay, isLeftover, SLOT_ORDER, type PlanSummary } from '../domain/planner'
 import { DEPARTMENT_NAMES, packPrice, PRODUCT_BY_ID, STORES } from '../domain/products'
 import type { Department, Household, MealSlot } from '../domain/types'
@@ -84,7 +84,7 @@ function Week({ household: h, plan, onSwap }: { household: Household; plan: Plan
                 <h3>{dish.name}</h3>
                 <div className="meta">
                   <span>{leftover ? 'Розігріти' : `${dish.minutes} хв`}</span>
-                  <span>{Math.round(dishNutrition(dish).kcal)} ккал</span>
+                  {tracksCalories(h.people) && <span>{Math.round(dishNutrition(dish).kcal)} ккал</span>}
                   <span className="price">{uah(plan.mealCosts[day][s] ?? 0)}</span>
                 </div>
               </div>
@@ -92,7 +92,9 @@ function Week({ household: h, plan, onSwap }: { household: Household; plan: Plan
           )
         })}
       </div>
-      <p className="muted small center">Ккал на стандартну порцію. Порції кожного рахуються під його норму. Ціна на всіх, {storeName(plan.store)}.</p>
+      <p className="muted small center">
+        {tracksCalories(h.people) && 'Ккал на стандартну порцію. Порції кожного рахуються під його норму. '}Ціна на всіх, {storeName(plan.store)}.
+      </p>
     </section>
   )
 }
@@ -131,9 +133,10 @@ export function Prices({ household: h, plan, onRegenerate }: { household: Househ
         <p className="hint">Ціни орієнтовні. Живі ціни магазинів підключимо на наступному етапі.</p>
       </div>
 
+      {tracksCalories(h.people) && (<>
       <h2 className="section-title">Калорії</h2>
       <div className="card stats-grid">
-        {h.people.map((p, i) => (
+        {h.people.map((p, i) => p.goal === 'save' ? null : (
           <div key={i}>
             <span className="muted small">{p.name}</span>
             <strong>{plan.targets[i]} ккал</strong>
@@ -144,6 +147,7 @@ export function Prices({ household: h, plan, onRegenerate }: { household: Househ
           <strong>{Math.round(avg.protein)} / {Math.round(avg.fat)} / {Math.round(avg.carbs)} г</strong>
         </div>
       </div>
+      </>)}
 
       <button className="secondary" onClick={onRegenerate}>Скласти інше меню</button>
     </section>

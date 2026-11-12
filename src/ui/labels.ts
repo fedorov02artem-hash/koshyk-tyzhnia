@@ -36,6 +36,7 @@ export const ACTIVITY_LABELS: Record<Activity, string> = {
 }
 
 export const GOAL_LABELS: Record<Goal, string> = {
+  save: 'Просто економити',
   lose: 'Схуднути',
   keep: 'Тримати вагу',
   gain: 'Набрати масу',

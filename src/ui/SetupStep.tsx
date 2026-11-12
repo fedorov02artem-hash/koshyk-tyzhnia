@@ -1,7 +1,8 @@
 import { SLOT_ORDER } from '../domain/planner'
 import type { DietStyle, Household, MealSlot } from '../domain/types'
 import { DIET_LABELS, SLOT_LABELS } from './labels'
-import { BigNumber } from './PeopleStep'
+import { uah } from './labels'
+import { Wheel } from './Wheel'
 import { EMOJI, Tiles } from './Tiles'
 
 export const SETUP_QUESTIONS = ['budget', 'diet', 'meals'] as const
@@ -35,14 +36,17 @@ export function SetupStep({ household: h, q, setQ, onChange, onNext }: Props) {
     hint = 'На продукти для всіх, хто їстиме.'
     body = (
       <>
-        <BigNumber autoFocus value={h.weeklyBudget} unit="₴" onChange={(weeklyBudget) => onChange({ ...h, weeklyBudget })} onEnter={next} />
-        <div className="chips">
-          {[1000, 1500, 2000, 3000, 4000].map((v) => (
-            <button key={v} className={v === h.weeklyBudget ? 'chip on' : 'chip'} onClick={() => onChange({ ...h, weeklyBudget: v })}>
-              {v} ₴
-            </button>
-          ))}
-        </div>
+        <Wheel
+          label="Бюджет на тиждень"
+          value={h.weeklyBudget}
+          min={300}
+          max={10000}
+          step={100}
+          unit="₴"
+          format={(v) => new Intl.NumberFormat('uk-UA').format(v)}
+          onChange={(weeklyBudget) => onChange({ ...h, weeklyBudget })}
+        />
+        <p className="muted small wheel-caption">≈ {uah(h.weeklyBudget / 7)} на день · гортайте вгору чи вниз</p>
       </>
     )
     canNext = h.weeklyBudget > 0

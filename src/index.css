@@ -288,3 +288,45 @@ button:disabled { opacity: 0.4; cursor: default; }
 img.tile-art { width: 84px; height: 84px; object-fit: contain; filter: drop-shadow(0 8px 10px rgb(0 0 0 / 0.16)); }
 img.dish-art { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.18)); }
 span.dish-art { font-size: 4.2rem; }
+
+/* Scroll wheel picker */
+.wheel { position: relative; margin: 8px auto 0; width: 100%; max-width: 320px; }
+.wheel-band {
+  position: absolute; left: 0; right: 0; border-radius: 16px; background: #eef3ef;
+  display: flex; align-items: center; justify-content: flex-end; padding-right: 18px; pointer-events: none;
+}
+.wheel-unit { font-size: 1rem; font-weight: 600; color: #1f4d33; }
+.wheel-scroll {
+  position: relative; height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; outline: none;
+  box-sizing: border-box; overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+}
+.wheel-scroll::-webkit-scrollbar { display: none; }
+.wheel-row {
+  scroll-snap-align: start; display: flex; align-items: center; justify-content: center;
+  font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text);
+  transition: transform 0.12s ease, opacity 0.12s ease; cursor: pointer; user-select: none;
+}
+.wheel-row.on { color: #1f4d33; }
+.wheel-caption { text-align: center; margin-top: 4px; }
+
+/* Compact tiles: three per row, small pictures, no scrolling */
+.tiles.compact { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tiles.compact .tile { padding: 10px 4px 10px; gap: 4px; border-radius: 16px; }
+.tiles.compact img.tile-art { width: 44px; height: 44px; filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.14)); }
+.tiles.compact span.tile-art { font-size: 2rem; }
+.tiles.compact strong { font-size: 0.82rem; line-height: 1.2; }
+.tiles.compact .tile-check { width: 18px; height: 18px; font-size: 0.7rem; top: 6px; right: 6px; }
+
+/* Product chips for likes and dislikes */
+.product-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pchip {
+  display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid #e6e6ea; background: #f3f3f6; color: var(--text);
+  border-radius: 999px; padding: 5px 10px; font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+}
+.pchip.like { border-color: #1f4d33; background: #eef3ef; color: #1f4d33; }
+.pchip.dislike { border-color: transparent; background: var(--warn-soft); color: var(--warn); }
+.pchip:disabled { opacity: 0.35; cursor: default; }
+/* The main button stays in reach even on long answers */
+.wizard > .primary { position: sticky; bottom: 12px; z-index: 1; box-shadow: 0 6px 18px rgb(0 0 0 / 0.12); }

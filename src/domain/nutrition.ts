@@ -57,14 +57,14 @@ export function dishAllowed(dish: Dish, people: Person[], diet: DietStyle): bool
 }
 
 const ACTIVITY_FACTOR: Record<Activity, number> = { low: 1.2, light: 1.375, moderate: 1.55, high: 1.725 }
-const GOAL_FACTOR: Record<Goal, number> = { lose: 0.85, keep: 1, gain: 1.12 }
+const GOAL_FACTOR: Record<Goal, number> = { save: 1, lose: 0.85, keep: 1, gain: 1.12 }
 
 /**
  * Daily calorie norm. Adults: Mifflin–St Jeor × activity × goal.
  * Under 18 a simple age-based estimate is used, and weight-loss deficits are not applied.
  */
 export function dailyKcal(person: Person): number {
-  if (person.manualKcal && person.manualKcal > 0) return Math.round(person.manualKcal)
+  if (person.goal !== 'save' && person.manualKcal && person.manualKcal > 0) return Math.round(person.manualKcal)
   if (person.age < 18) {
     const base = Math.min(1000 + 100 * Math.max(person.age, 1), person.sex === 'male' ? 2800 : 2300)
     const activity = ACTIVITY_FACTOR[person.activity] / ACTIVITY_FACTOR.light
@@ -74,3 +74,6 @@ export function dailyKcal(person: Person): number {
   const kcal = bmr * ACTIVITY_FACTOR[person.activity] * GOAL_FACTOR[person.goal]
   return Math.round(Math.max(kcal, person.sex === 'male' ? 1500 : 1200) / 10) * 10
 }
+
+/** Calories matter to this household only if someone has a health goal. */
+export const tracksCalories = (people: Person[]) => people.some((p) => p.goal !== 'save')

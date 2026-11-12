@@ -68,7 +68,8 @@ export interface Dish {
 
 export type Sex = 'male' | 'female'
 export type Activity = 'low' | 'light' | 'moderate' | 'high'
-export type Goal = 'lose' | 'keep' | 'gain'
+/** 'save' = no health goal, only saving money: calories are not shown for this person. */
+export type Goal = 'save' | 'lose' | 'keep' | 'gain'
 
 export interface Person {
   name: string
@@ -82,6 +83,8 @@ export interface Person {
   manualKcal?: number
   allergies: Allergen[]
   excludedProducts: string[]
+  /** Favourite products: dishes with them are picked more often. */
+  likedProducts?: string[]
 }
 
 export interface Household {

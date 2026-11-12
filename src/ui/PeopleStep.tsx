@@ -1,10 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { newPerson } from '../domain/people'
 import { dailyKcal } from '../domain/nutrition'
-import { PRODUCTS, PRODUCT_BY_ID } from '../domain/products'
+import { PRODUCTS } from '../domain/products'
 import type { Activity, Allergen, Goal, Household, Person, Sex } from '../domain/types'
 import { EMOJI, Tiles } from './Tiles'
 import { ACTIVITY_LABELS, ALLERGEN_LABELS, GOAL_LABELS, SEX_LABELS } from './labels'
+import { Wheel } from './Wheel'
 
 interface Props {
   household: Household
@@ -47,7 +48,7 @@ export function PeopleStep({ household: h, onChange, onDone, error }: Props) {
               <div>
                 <strong>{p.name}</strong>
                 <div className="muted small">
-                  {dailyKcal(p)} ккал/день · {GOAL_LABELS[p.goal].toLowerCase()}
+                  {p.goal === 'save' ? 'без підрахунку калорій' : `${dailyKcal(p)} ккал/день · ${GOAL_LABELS[p.goal].toLowerCase()}`}
                   {p.allergies.length > 0 && ` · без: ${p.allergies.map((a) => ALLERGEN_LABELS[a].toLowerCase()).join(', ')}`}
                 </div>
               </div>
@@ -94,8 +95,11 @@ export function PeopleStep({ household: h, onChange, onDone, error }: Props) {
   )
 }
 
-type Question = 'name' | 'sex' | 'age' | 'height' | 'weight' | 'activity' | 'goal' | 'norm' | 'allergies' | 'excluded'
-const QUESTIONS: Question[] = ['name', 'sex', 'age', 'height', 'weight', 'activity', 'goal', 'norm', 'allergies', 'excluded']
+type Question = 'name' | 'sex' | 'age' | 'goal' | 'height' | 'weight' | 'activity' | 'norm' | 'allergies' | 'liked' | 'excluded'
+const ALL_QUESTIONS: Question[] = ['name', 'sex', 'age', 'goal', 'height', 'weight', 'activity', 'norm', 'allergies', 'liked', 'excluded']
+/** Without a health goal the body questions and the calorie norm are skipped. */
+const CALORIE_QUESTIONS: Question[] = ['height', 'weight', 'activity', 'norm']
+const questionsFor = (p: Person) => (p.goal === 'save' ? ALL_QUESTIONS.filter((q) => !CALORIE_QUESTIONS.includes(q)) : ALL_QUESTIONS)
 
 interface WizardProps {
   person: Person
@@ -110,6 +114,7 @@ interface WizardProps {
 function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish }: WizardProps) {
   const [q, setQ] = useState(0)
   const [manualOpen, setManualOpen] = useState(p.manualKcal !== undefined)
+  const QUESTIONS = questionsFor(p)
   const question = QUESTIONS[q]
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -150,18 +155,15 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       break
     case 'age':
       title = 'Скільки років?'
-      body = <BigNumber autoFocus value={p.age} unit="років" onChange={(age) => update({ age })} onEnter={next} />
-      canNext = p.age > 0 && p.age < 110
+      body = <Wheel label="Вік" value={p.age} min={1} max={100} unit="років" onChange={(age) => update({ age })} />
       break
     case 'height':
       title = 'Який зріст?'
-      body = <BigNumber autoFocus value={p.heightCm} unit="см" onChange={(heightCm) => update({ heightCm })} onEnter={next} />
-      canNext = p.heightCm >= 50 && p.heightCm <= 250
+      body = <Wheel label="Зріст" value={p.heightCm} min={80} max={220} unit="см" onChange={(heightCm) => update({ heightCm })} />
       break
     case 'weight':
       title = 'Яка вага?'
-      body = <BigNumber autoFocus value={p.weightKg} unit="кг" onChange={(weightKg) => update({ weightKg })} onEnter={next} />
-      canNext = p.weightKg >= 10 && p.weightKg <= 300
+      body = <Wheel label="Вага" value={p.weightKg} min={10} max={200} unit="кг" onChange={(weightKg) => update({ weightKg })} />
       break
     case 'activity':
       title = 'Скільки руху протягом дня?'
@@ -176,6 +178,7 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       break
     case 'goal':
       title = 'Яка мета?'
+      hint = 'Якщо мета лише заощадити, калорії не рахуємо.'
       body = (
         <Tiles
           options={(Object.keys(GOAL_LABELS) as Goal[]).map((g) => ({ value: g, title: GOAL_LABELS[g], hint: GOAL_HINTS[g], emoji: EMOJI.goal[g] }))}
@@ -190,7 +193,7 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       hint = manualOpen ? 'Вкажіть свою добову норму.' : 'Порахували за вашими відповідями. Можна вказати свою.'
       body = manualOpen ? (
         <>
-          <BigNumber autoFocus value={p.manualKcal ?? dailyKcal(p)} unit="ккал" onChange={(manualKcal) => update({ manualKcal })} onEnter={next} />
+          <Wheel label="Норма калорій" value={p.manualKcal ?? dailyKcal(p)} min={1000} max={4500} step={50} unit="ккал" onChange={(manualKcal) => update({ manualKcal })} />
           <button className="ghost" onClick={() => { update({ manualKcal: undefined }); setManualOpen(false) }}>Порахувати за анкетою</button>
         </>
       ) : (
@@ -217,44 +220,31 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       break
     case 'allergies':
       title = 'Є алергії чи непереносимість?'
-      hint = 'Оберіть усе, що підходить. Такі страви не потраплять у меню.'
+      hint = 'Такі страви не потраплять у меню.'
       body = (
         <Tiles
+          compact
           options={(Object.keys(ALLERGEN_LABELS) as Allergen[]).map((a) => ({ value: a, title: ALLERGEN_LABELS[a], emoji: EMOJI.allergen[a] }))}
           selected={p.allergies}
           onToggle={(a) => update({ allergies: p.allergies.includes(a) ? p.allergies.filter((x) => x !== a) : [...p.allergies, a] })}
         />
       )
       break
+    case 'liked':
+      title = 'Що любить?'
+      hint = 'Страви з цими продуктами будуть частіше. Можна пропустити.'
+      body = <FoodChips mode="like" person={p} update={update} />
+      break
     case 'excluded':
       title = 'Чого не їсть?'
-      hint = 'Продукти, які просто не подобаються. Можна пропустити.'
-      body = (
-        <div className="chips">
-          {p.excludedProducts.map((id) => (
-            <button key={id} className="chip warn" onClick={() => update({ excludedProducts: p.excludedProducts.filter((x) => x !== id) })}>
-              {PRODUCT_BY_ID[id].name} ✕
-            </button>
-          ))}
-          <select
-            className="chip-select"
-            value=""
-            onChange={(e) => e.target.value && update({ excludedProducts: [...p.excludedProducts, e.target.value] })}
-          >
-            <option value="">+ Додати продукт</option>
-            {PRODUCTS.filter((x) => !p.excludedProducts.includes(x.id))
-              .sort((a, b) => a.name.localeCompare(b.name, 'uk'))
-              .map((x) => (
-                <option key={x.id} value={x.id}>{x.name}</option>
-              ))}
-          </select>
-        </div>
-      )
+      hint = 'Страв з цими продуктами не буде. Можна пропустити.'
+      body = <FoodChips mode="dislike" person={p} update={update} />
       break
   }
 
-  const multi = question === 'allergies' || question === 'excluded'
-  const empty = question === 'allergies' ? p.allergies.length === 0 : p.excludedProducts.length === 0
+  const multi = question === 'allergies' || question === 'liked' || question === 'excluded'
+  const empty =
+    question === 'allergies' ? p.allergies.length === 0 : question === 'liked' ? !p.likedProducts?.length : p.excludedProducts.length === 0
 
   return (
     <section className="wizard">
@@ -276,7 +266,7 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
 
       {showNext && (
         <button className="primary" disabled={!canNext} onClick={next}>
-          {last ? finishLabel : multi && empty ? 'Немає, далі' : 'Далі'}
+          {last && !(multi && empty) ? finishLabel : multi && empty ? (question === 'allergies' ? 'Немає' : last ? `Пропустити · ${finishLabel.toLowerCase()}` : 'Пропустити') : 'Далі'}
         </button>
       )}
     </section>
@@ -291,6 +281,7 @@ const ACTIVITY_HINTS: Record<Activity, string> = {
 }
 
 const GOAL_HINTS: Record<Goal, string> = {
+  save: 'Без калорій, лише бюджет',
   lose: 'Невеликий дефіцит калорій',
   keep: 'Їсти стільки, скільки витрачаєте',
   gain: 'Трохи більше калорій і білка',
@@ -321,18 +312,74 @@ function BigInput({ value, onChange, onEnter, autoFocus }: { value: string; onCh
   )
 }
 
-export function BigNumber({ value, unit, onChange, onEnter, autoFocus }: { value: number; unit: string; onChange: (v: number) => void; onEnter: () => void; autoFocus?: boolean }) {
+
+/** Everyday foods people usually have an opinion about. One chip can stand for several products. */
+const FOODS: { label: string; emoji: string; ids: string[] }[] = [
+  { label: 'Курка', emoji: '🍗', ids: ['chicken_fillet', 'chicken_thighs'] },
+  { label: 'Свинина', emoji: '🥩', ids: ['pork'] },
+  { label: 'Фарш', emoji: '🍖', ids: ['mince'] },
+  { label: 'Печінка', emoji: '🫀', ids: ['chicken_liver'] },
+  { label: 'Риба', emoji: '🐟', ids: ['hake'] },
+  { label: 'Креветки', emoji: '🦐', ids: ['shrimp'] },
+  { label: 'Яйця', emoji: '🥚', ids: ['eggs'] },
+  { label: 'Сир кисломолочний', emoji: '🥣', ids: ['cottage'] },
+  { label: 'Твердий сир', emoji: '🧀', ids: ['cheese'] },
+  { label: 'Молоко', emoji: '🥛', ids: ['milk', 'kefir', 'yogurt'] },
+  { label: 'Гречка', emoji: '🌾', ids: ['buckwheat'] },
+  { label: 'Рис', emoji: '🍚', ids: ['rice'] },
+  { label: 'Макарони', emoji: '🍝', ids: ['pasta'] },
+  { label: 'Вівсянка', emoji: '🥣', ids: ['oats'] },
+  { label: 'Пшоно', emoji: '🌾', ids: ['millet'] },
+  { label: 'Картопля', emoji: '🥔', ids: ['potato'] },
+  { label: 'Капуста', emoji: '🥬', ids: ['cabbage'] },
+  { label: 'Буряк', emoji: '🫜', ids: ['beet'] },
+  { label: 'Гриби', emoji: '🍄', ids: ['mushrooms'] },
+  { label: 'Броколі', emoji: '🥦', ids: ['broccoli'] },
+  { label: 'Кабачок', emoji: '🥒', ids: ['zucchini'] },
+  { label: 'Квасоля', emoji: '🫘', ids: ['beans_can'] },
+  { label: 'Сочевиця', emoji: '🫘', ids: ['lentils'] },
+  { label: 'Нут', emoji: '🧆', ids: ['chickpeas'] },
+  { label: 'Тофу', emoji: '🌱', ids: ['tofu'] },
+  { label: 'Яблука', emoji: '🍎', ids: ['apple'] },
+  { label: 'Банани', emoji: '🍌', ids: ['banana'] },
+  { label: 'Мед', emoji: '🍯', ids: ['honey'] },
+]
+const IN_FOODS = new Set(FOODS.flatMap((f) => f.ids))
+
+function FoodChips({ mode, person: p, update }: { mode: 'like' | 'dislike'; person: Person; update: (patch: Partial<Person>) => void }) {
+  const [all, setAll] = useState(false)
+  const mine = mode === 'like' ? p.likedProducts ?? [] : p.excludedProducts
+  const other = mode === 'like' ? p.excludedProducts : p.likedProducts ?? []
+  const set = (ids: string[]) => update(mode === 'like' ? { likedProducts: ids } : { excludedProducts: ids })
+  const items = [
+    ...FOODS,
+    ...(all
+      ? PRODUCTS.filter((x) => !IN_FOODS.has(x.id))
+          .sort((a, b) => a.name.localeCompare(b.name, 'uk'))
+          .map((x) => ({ label: x.name, emoji: '', ids: [x.id] }))
+      : []),
+  ]
   return (
-    <div className="big-number">
-      <input
-        type="number"
-        inputMode="numeric"
-        autoFocus={autoFocus}
-        value={value || ''}
-        onChange={(e) => onChange(Number(e.target.value))}
-        onKeyDown={(e) => e.key === 'Enter' && onEnter()}
-      />
-      <span>{unit}</span>
-    </div>
+    <>
+      <div className="product-chips">
+        {items.map((f) => {
+          const on = f.ids.every((id) => mine.includes(id))
+          const blocked = f.ids.every((id) => other.includes(id))
+          return (
+            <button
+              key={f.label}
+              className={on ? `pchip ${mode}` : 'pchip'}
+              aria-pressed={on}
+              disabled={blocked}
+              onClick={() => set(on ? mine.filter((id) => !f.ids.includes(id)) : [...new Set([...mine, ...f.ids])])}
+            >
+              {f.emoji && <span aria-hidden>{f.emoji}</span>}
+              {f.label}
+            </button>
+          )
+        })}
+      </div>
+      {!all && <button className="ghost" onClick={() => setAll(true)}>Усі продукти</button>}
+    </>
   )
 }

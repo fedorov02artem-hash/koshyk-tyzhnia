@@ -151,8 +151,13 @@ function score(h: Household, grid: MenuGrid): number {
       // Same dish again the next day without being a planned leftover feels monotonous.
       if (day > 0 && Object.values(grid[day - 1]).includes(id)) backToBack++
     }
+  // Favourite products: each planned dish that has one counts as a small win.
+  const liked = new Set(h.people.flatMap((p) => p.likedProducts ?? []))
+  let favourites = 0
+  if (liked.size)
+    for (const [id, n] of uses) if (DISH_BY_ID[id].ingredients.some((ing) => liked.has(ing.productId))) favourites += n
   const repeats = [...uses.values()].reduce((a, n) => a + Math.max(0, n - 1), 0)
-  let value = s.overBudget * 10 + repeats * 60 + backToBack * 400 + s.cost * 0.05 + s.cookCount * 3
+  let value = s.overBudget * 10 + repeats * 60 + backToBack * 400 + s.cost * 0.05 + s.cookCount * 3 - favourites * 25
   if (h.diet === 'highProtein') value -= proteinShare(averageDay(h, grid)) * 3000
   return value
 }

@@ -8,9 +8,9 @@ export interface TileOption<T extends string> {
 }
 
 /** Two-column picture tiles. Used for single choice (one selected) and multi choice. */
-export function Tiles<T extends string>({ options, selected, onToggle }: { options: TileOption<T>[]; selected: T[]; onToggle: (v: T) => void }) {
+export function Tiles<T extends string>({ options, selected, onToggle, compact }: { options: TileOption<T>[]; selected: T[]; onToggle: (v: T) => void; compact?: boolean }) {
   return (
-    <div className="tiles">
+    <div className={compact ? 'tiles compact' : 'tiles'}>
       {options.map((o) => {
         const on = selected.includes(o.value)
         return (
@@ -29,7 +29,7 @@ export function Tiles<T extends string>({ options, selected, onToggle }: { optio
 export const EMOJI = {
   sex: { female: '👩', male: '👨' },
   activity: { low: '🛋️', light: '🚶', moderate: '🏃', high: '🏋️' },
-  goal: { lose: '🥗', keep: '⚖️', gain: '💪' },
+  goal: { save: '🍽️', lose: '🥗', keep: '⚖️', gain: '💪' },
   diet: { omnivore: '🍗', vegetarian: '🧀', vegan: '🥦', highProtein: '🥩' },
   allergen: { gluten: '🍞', milk: '🥛', eggs: '🥚', nuts: '🌰', peanuts: '🥜', fish: '🐟', shellfish: '🦐', soy: '🫘', sesame: '🥯' },
   meal: { breakfast: '🍳', lunch: '🍲', dinner: '🍝', snack: '🍎' },

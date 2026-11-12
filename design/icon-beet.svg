@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#FBF1E1"/>
+  <!-- leaves -->
+  <path d="M256 214 C214 196 150 168 146 104 C200 98 248 140 256 214Z" fill="#3E9B57"/>
+  <path d="M256 214 C266 138 316 92 376 96 C374 162 306 196 256 214Z" fill="#5BBF6A"/>
+  <path d="M256 220 V150" stroke="#2F7D45" stroke-width="16" stroke-linecap="round"/>
+  <!-- beet -->
+  <path d="M256 206 C340 206 382 262 372 318 C360 384 300 414 256 446 C212 414 152 384 140 318 C130 262 172 206 256 206Z" fill="#B3264F"/>
+  <path d="M256 446 C252 462 250 474 256 490 C262 474 260 462 256 446Z" fill="#B3264F"/>
+  <path d="M206 262 C184 282 178 310 184 334" stroke="#D9577A" stroke-width="18" stroke-linecap="round" fill="none"/>
+</svg>

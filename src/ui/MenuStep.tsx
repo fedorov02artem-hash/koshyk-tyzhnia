@@ -4,116 +4,148 @@ import { dishNutrition } from '../domain/nutrition'
 import { averageDay, isLeftover, SLOT_ORDER, type PlanSummary } from '../domain/planner'
 import { DEPARTMENT_NAMES, packPrice, PRODUCT_BY_ID, STORES } from '../domain/products'
 import type { Department, Household, MealSlot } from '../domain/types'
+import { dishEmoji, dishTint } from './dishArt'
 import { DAY_NAMES, SLOT_LABELS, uah } from './labels'
+
+export type MenuTab = 'week' | 'list' | 'prices'
 
 interface Props {
   household: Household
   plan: PlanSummary
+  tab: MenuTab
   onRegenerate: () => void
   onSwap: (day: number, slot: MealSlot) => void
 }
 
 const storeName = (id: string) => STORES.find((s) => s.id === id)!.name
+const SHORT_DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд']
 
-export function MenuStep({ household: h, plan, onRegenerate, onSwap }: Props) {
-  const [tab, setTab] = useState<'menu' | 'list'>('menu')
-  const share = Math.min(plan.cost / Math.max(h.weeklyBudget, 1), 1.5)
+export function MenuStep({ household: h, plan, tab, onRegenerate, onSwap }: Props) {
+  if (tab === 'list') return <ShoppingList plan={plan} />
+  if (tab === 'prices') return <Prices household={h} plan={plan} onRegenerate={onRegenerate} />
+  return <Week household={h} plan={plan} onSwap={onSwap} />
+}
+
+function BudgetPill({ household: h, plan }: { household: Household; plan: PlanSummary }) {
   const over = plan.overBudget > 0
-  const avg = averageDay(h, plan.grid)
+  return (
+    <span className={over ? 'pill over' : 'pill'}>
+      {uah(plan.cost)} <span className="of">з {uah(h.weeklyBudget)}</span>
+    </span>
+  )
+}
+
+function Week({ household: h, plan, onSwap }: { household: Household; plan: PlanSummary; onSwap: Props['onSwap'] }) {
+  const [day, setDay] = useState(0)
   const slots = SLOT_ORDER.filter((s) => h.meals.includes(s))
+  const row = plan.grid[day]
+  const dayCost = slots.reduce((sum, s) => sum + (plan.mealCosts[day][s] ?? 0), 0)
 
   return (
     <section className="stack">
+      <div className="page-head">
+        <h1>Ваш тиждень</h1>
+        <BudgetPill household={h} plan={plan} />
+      </div>
+
+      <div className="days" role="tablist">
+        {SHORT_DAYS.map((d, i) => (
+          <button key={d} role="tab" aria-selected={i === day} className={i === day ? 'day-chip on' : 'day-chip'} onClick={() => setDay(i)}>
+            <span>{d}</span>
+            <small>{uah(slots.reduce((sum, s) => sum + (plan.mealCosts[i][s] ?? 0), 0)).replace(' ₴', '')}</small>
+          </button>
+        ))}
+      </div>
+
+      <div className="row-between">
+        <h2 className="section-title">{DAY_NAMES[day]}</h2>
+        <span className="muted small">{uah(dayCost)} за день · {h.people.length > 1 ? `на ${h.people.length} осіб` : 'на 1 особу'}</span>
+      </div>
+
+      <div className="recipes">
+        {slots.map((s) => {
+          const id = row[s]
+          if (!id) return null
+          const dish = DISH_BY_ID[id]
+          const leftover = isLeftover(plan.grid, day, s)
+          const cooksTwo = dish.batch && !leftover && plan.grid[day + 1]?.[s] === id
+          return (
+            <article key={s} className="recipe">
+              <div className="recipe-art" style={{ background: dishTint(dish.kind) }}>
+                <span aria-hidden>{dishEmoji(id)}</span>
+                <span className="badge">{SLOT_LABELS[s]}</span>
+                {(leftover || cooksTwo) && <span className="badge alt">{leftover ? 'Залишок з учора' : 'Готуємо на 2 дні'}</span>}
+                <button className="swap" title="Замінити страву" aria-label={`Замінити: ${dish.name}`} onClick={() => onSwap(day, s)}>
+                  <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.7L4 15.5M4 20v-4.5h4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </div>
+              <div className="recipe-body">
+                <h3>{dish.name}</h3>
+                <div className="meta">
+                  <span>{leftover ? 'Розігріти' : `${dish.minutes} хв`}</span>
+                  <span>{Math.round(dishNutrition(dish).kcal)} ккал</span>
+                  <span className="price">{uah(plan.mealCosts[day][s] ?? 0)}</span>
+                </div>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+      <p className="muted small center">Ккал на стандартну порцію. Порції кожного рахуються під його норму. Ціна на всіх, {storeName(plan.store)}.</p>
+    </section>
+  )
+}
+
+function Prices({ household: h, plan, onRegenerate }: { household: Household; plan: PlanSummary; onRegenerate: () => void }) {
+  const share = Math.min(plan.cost / Math.max(h.weeklyBudget, 1), 1)
+  const over = plan.overBudget > 0
+  const avg = averageDay(h, plan.grid)
+  const max = plan.storeTotals[plan.storeTotals.length - 1].total
+  return (
+    <section className="stack">
+      <div className="page-head">
+        <h1>Бюджет і ціни</h1>
+      </div>
       <div className="card summary">
-        <div className="row-between">
-          <div>
-            <span className="muted small">Кошик на тиждень · {storeName(plan.store)}</span>
-            <div className="total">{uah(plan.cost)}</div>
-          </div>
-          <div className="right">
-            <span className="muted small">Бюджет</span>
-            <div className="budget">{uah(h.weeklyBudget)}</div>
-          </div>
-        </div>
-        <div className={over ? 'bar over' : 'bar'}>
-          <span style={{ width: `${Math.min(share, 1) * 100}%` }} />
-        </div>
+        <span className="muted small">Кошик на тиждень · {storeName(plan.store)}</span>
+        <div className="total">{uah(plan.cost)}</div>
+        <div className={over ? 'bar over' : 'bar'}><span style={{ width: `${share * 100}%` }} /></div>
         <p className={over ? 'error small' : 'muted small'}>
           {over
             ? `Не вкладаємось на ${uah(plan.overBudget)}. Спробуйте інший магазин, менше перекусів або більший бюджет.`
-            : `Залишок ${uah(h.weeklyBudget - plan.cost)}. Ціни орієнтовні, ціла упаковка кожного продукту.`}
+            : `Бюджет ${uah(h.weeklyBudget)}, залишок ${uah(h.weeklyBudget - plan.cost)}.`}
         </p>
-        <div className="stats">
-          {h.people.map((p, i) => (
-            <div key={i}>
-              <span className="muted small">{p.name}</span>
-              <strong>{plan.targets[i]} ккал</strong>
-            </div>
-          ))}
-          <div>
-            <span className="muted small">Б / Ж / В на порцію-день</span>
-            <strong>{Math.round(avg.protein)} / {Math.round(avg.fat)} / {Math.round(avg.carbs)} г</strong>
-          </div>
-        </div>
       </div>
 
+      <h2 className="section-title">Цей кошик у магазинах</h2>
       <div className="card">
-        <span className="label">Цей кошик в інших магазинах</span>
-        <ul className="stores">
+        <ul className="store-bars">
           {plan.storeTotals.map((t, i) => (
             <li key={t.store} className={t.store === plan.store ? 'current' : ''}>
-              <span>{storeName(t.store)}</span>
-              <span className="dots" />
-              <span>{uah(t.total)}</span>
-              {i === 0 && <span className="tag">найдешевше</span>}
+              <div className="row-between">
+                <span>{storeName(t.store)} {i === 0 && <span className="tag">найдешевше</span>}</span>
+                <strong>{uah(t.total)}</strong>
+              </div>
+              <div className="mini-bar"><span style={{ width: `${(t.total / max) * 100}%` }} /></div>
             </li>
           ))}
         </ul>
+        <p className="hint">Ціни орієнтовні. Живі ціни магазинів підключимо на наступному етапі.</p>
       </div>
 
-      <div className="seg">
-        <button className={tab === 'menu' ? 'on' : ''} onClick={() => setTab('menu')}>Меню</button>
-        <button className={tab === 'list' ? 'on' : ''} onClick={() => setTab('list')}>Список покупок</button>
+      <h2 className="section-title">Калорії</h2>
+      <div className="card stats-grid">
+        {h.people.map((p, i) => (
+          <div key={i}>
+            <span className="muted small">{p.name}</span>
+            <strong>{plan.targets[i]} ккал</strong>
+          </div>
+        ))}
+        <div>
+          <span className="muted small">Б / Ж / В, стандартна порція на день</span>
+          <strong>{Math.round(avg.protein)} / {Math.round(avg.fat)} / {Math.round(avg.carbs)} г</strong>
+        </div>
       </div>
-
-      {tab === 'menu' ? (
-        <>
-          {plan.grid.map((day, d) => {
-            const dayKcal = slots.reduce((sum, s) => sum + (day[s] ? dishNutrition(DISH_BY_ID[day[s]!]).kcal : 0), 0)
-            return (
-              <div key={d} className="card day">
-                <div className="row-between">
-                  <h2>{DAY_NAMES[d]}</h2>
-                  <span className="muted small">{Math.round(dayKcal)} ккал на стандартну порцію</span>
-                </div>
-                {slots.map((s) => {
-                  const id = day[s]
-                  if (!id) return null
-                  const dish = DISH_BY_ID[id]
-                  const leftover = isLeftover(plan.grid, d, s)
-                  return (
-                    <div key={s} className="meal">
-                      <span className="slot">{SLOT_LABELS[s]}</span>
-                      <div className="dish">
-                        <span>{dish.name}</span>
-                        <span className="muted small">
-                          {Math.round(dishNutrition(dish).kcal)} ккал · {leftover ? 'залишок з учора' : `${dish.minutes} хв`}
-                          {dish.batch && !leftover && plan.grid[d + 1]?.[s] === id && ' · готуємо на 2 дні'}
-                        </span>
-                      </div>
-                      <button className="icon" title="Замінити страву" aria-label={`Замінити: ${dish.name}`} onClick={() => onSwap(d, s)}>
-                        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.7L4 15.5M4 20v-4.5h4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      </button>
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          })}
-        </>
-      ) : (
-        <ShoppingList plan={plan} />
-      )}
 
       <button className="secondary" onClick={onRegenerate}>Скласти інше меню</button>
     </section>
@@ -121,24 +153,39 @@ export function MenuStep({ household: h, plan, onRegenerate, onSwap }: Props) {
 }
 
 function ShoppingList({ plan }: { plan: PlanSummary }) {
+  const [checked, setChecked] = useState<Set<string>>(new Set())
   const groups = new Map<Department, PlanSummary['shopping']>()
   for (const item of plan.shopping) {
     const dep = PRODUCT_BY_ID[item.productId].department
     groups.set(dep, [...(groups.get(dep) ?? []), item])
   }
+  const toggle = (id: string) =>
+    setChecked((s) => {
+      const n = new Set(s)
+      if (n.has(id)) n.delete(id)
+      else n.add(id)
+      return n
+    })
   return (
-    <>
+    <section className="stack">
+      <div className="page-head">
+        <h1>Покупки</h1>
+        <span className="pill">{uah(plan.cost)}</span>
+      </div>
+      <p className="muted small">{storeName(plan.store)} · {plan.shopping.length} позицій · куплено {checked.size}</p>
       {(Object.keys(DEPARTMENT_NAMES) as Department[])
         .filter((d) => groups.has(d))
         .map((dep) => (
-          <div key={dep} className="card">
-            <span className="label">{DEPARTMENT_NAMES[dep]}</span>
-            <ul className="shopping">
+          <div key={dep}>
+            <h2 className="section-title">{DEPARTMENT_NAMES[dep]}</h2>
+            <ul className="shopping card">
               {groups.get(dep)!.map((it) => {
                 const p = PRODUCT_BY_ID[it.productId]
+                const done = checked.has(it.productId)
                 return (
-                  <li key={it.productId}>
-                    <div>
+                  <li key={it.productId} className={done ? 'done' : ''} onClick={() => toggle(it.productId)}>
+                    <span className="check" aria-hidden>{done ? '✓' : ''}</span>
+                    <div className="grow">
                       <span>{p.name}</span>
                       <span className="muted small">
                         {it.packs} × {p.packLabel} · потрібно {it.grams >= 1000 ? `${(it.grams / 1000).toFixed(1)} кг` : `${it.grams} г`}
@@ -151,6 +198,6 @@ function ShoppingList({ plan }: { plan: PlanSummary }) {
             </ul>
           </div>
         ))}
-    </>
+    </section>
   )
 }

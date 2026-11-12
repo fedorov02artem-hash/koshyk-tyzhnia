@@ -35,6 +35,8 @@ export interface PlanSummary {
   overBudget: number
   /** Number of times a dish is cooked (leftover days do not count). */
   cookCount: number
+  /** Price of the ingredients each meal uses, for everyone, at the chosen store (by weight, not whole packs). */
+  mealCosts: Partial<Record<MealSlot, number>>[]
 }
 
 function pools(h: Household): Record<MealSlot, Dish[]> {
@@ -98,6 +100,22 @@ export function summarize(h: Household, grid: MenuGrid): PlanSummary {
   const store = h.store === 'cheapest' ? storeTotals[0].store : h.store
   const cost = storeTotals.find((t) => t.store === store)!.total
 
+  const mealCosts = grid.map((day, d) => {
+    const servings = portions[d].reduce((a, b) => a + b, 0)
+    const row: Partial<Record<MealSlot, number>> = {}
+    for (const slot of slots) {
+      const id = day[slot]
+      if (!id) continue
+      row[slot] = round2(
+        DISH_BY_ID[id].ingredients.reduce(
+          (sum, ing) => sum + ((ing.grams * servings) / PRODUCT_BY_ID[ing.productId].packGrams) * packPrice(ing.productId, store),
+          0,
+        ),
+      )
+    }
+    return row
+  })
+
   return {
     grid,
     portions,
@@ -109,6 +127,7 @@ export function summarize(h: Household, grid: MenuGrid): PlanSummary {
     cost,
     overBudget: Math.max(0, round2(cost - h.weeklyBudget)),
     cookCount,
+    mealCosts,
   }
 }
 

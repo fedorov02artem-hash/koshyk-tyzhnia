@@ -1,32 +1,17 @@
-# React + TypeScript + Vite
+# Кошик тижня
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Веб-застосунок (PWA) українською: меню на 7 днів у межах тижневого бюджету, з калоріями під кожну людину, алергіями та порівнянням цін у магазинах (АТБ, Сільпо, Novus, Ашан, Varus, Фора).
 
-Currently, two official plugins are available:
+- Анкета на кожну людину: норма калорій (Міффлін–Сан Жеор), мета, алергії, продукти-виключення.
+- Підбір меню під бюджет, супи й рагу на 2 дні, заміна страви, ціна кожної страви.
+- Список покупок по відділах, порівняння кошика в 6 мережах.
+- Дані зберігаються лише на пристрої. Ціни поки орієнтовні.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # локально
+npx vitest run   # тести
+npm run build    # збірка в dist/
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Публікується на GitHub Pages автоматично при пуші в `main`.

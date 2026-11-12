@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 export interface TileOption<T extends string> {
   value: T
   title: string
@@ -14,7 +16,7 @@ export function Tiles<T extends string>({ options, selected, onToggle }: { optio
         return (
           <button key={o.value} className={on ? 'tile on' : 'tile'} aria-pressed={on} onClick={() => onToggle(o.value)}>
             {on && <span className="tile-check" aria-hidden>✓</span>}
-            <span className="tile-art" aria-hidden>{o.emoji}</span>
+            <Art emoji={o.emoji} className="tile-art" />
             <strong>{o.title}</strong>
             {o.hint && <span className="tile-hint">{o.hint}</span>}
           </button>
@@ -32,3 +34,18 @@ export const EMOJI = {
   allergen: { gluten: '🍞', milk: '🥛', eggs: '🥚', nuts: '🌰', peanuts: '🥜', fish: '🐟', shellfish: '🦐', soy: '🫘', sesame: '🥯' },
   meal: { breakfast: '🍳', lunch: '🍲', dinner: '🍝', snack: '🍎' },
 } as const
+
+/** 3D picture for an emoji (Microsoft Fluent Emoji, MIT), falling back to the emoji itself. */
+export function artUrl(emoji: string) {
+  const key = Array.from(emoji)
+    .map((c) => c.codePointAt(0)!.toString(16))
+    .filter((c) => c !== 'fe0f')
+    .join('-')
+  return `${import.meta.env.BASE_URL}art/${key}.webp`
+}
+
+export function Art({ emoji, className }: { emoji: string; className?: string }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return <span className={className} aria-hidden>{emoji}</span>
+  return <img className={className + ' art-img'} src={artUrl(emoji)} alt="" aria-hidden onError={() => setFailed(true)} />
+}

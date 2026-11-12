@@ -285,3 +285,6 @@ button:disabled { opacity: 0.4; cursor: default; }
 .store-check { background: #1f4d33; width: 28px; height: 28px; }
 .app:has(.wizard-top) .topbar { display: none; }
 .wizard-top { padding-top: 14px; }
+img.tile-art { width: 84px; height: 84px; object-fit: contain; filter: drop-shadow(0 8px 10px rgb(0 0 0 / 0.16)); }
+img.dish-art { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.18)); }
+span.dish-art { font-size: 4.2rem; }

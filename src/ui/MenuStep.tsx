@@ -5,6 +5,7 @@ import { averageDay, isLeftover, SLOT_ORDER, type PlanSummary } from '../domain/
 import { DEPARTMENT_NAMES, packPrice, PRODUCT_BY_ID, STORES } from '../domain/products'
 import type { Department, Household, MealSlot } from '../domain/types'
 import { dishEmoji, dishTint } from './dishArt'
+import { Art } from './Tiles'
 import { DAY_NAMES, SLOT_LABELS, uah } from './labels'
 
 export type MenuTab = 'week' | 'list' | 'prices'
@@ -72,7 +73,7 @@ function Week({ household: h, plan, onSwap }: { household: Household; plan: Plan
           return (
             <article key={s} className="recipe">
               <div className="recipe-art" style={{ background: dishTint(dish.kind) }}>
-                <span aria-hidden>{dishEmoji(id)}</span>
+                <Art emoji={dishEmoji(id)} className="dish-art" />
                 <span className="badge">{SLOT_LABELS[s]}</span>
                 {(leftover || cooksTwo) && <span className="badge alt">{leftover ? 'Залишок з учора' : 'Готуємо на 2 дні'}</span>}
                 <button className="swap" title="Замінити страву" aria-label={`Замінити: ${dish.name}`} onClick={() => onSwap(day, s)}>

@@ -15,3 +15,7 @@ npm run build    # збірка в dist/
 ```
 
 Публікується на GitHub Pages автоматично при пуші в `main`.
+
+## Ілюстрації
+
+3D-картинки в `public/art/`: [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji), ліцензія MIT.

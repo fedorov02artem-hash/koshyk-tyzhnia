@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#F6EAD7"/>
+  <!-- tilted plate (3/4 view) -->
+  <ellipse cx="256" cy="330" rx="200" ry="92" fill="#E2D2B8"/>
+  <ellipse cx="256" cy="318" rx="200" ry="92" fill="#FFFFFF"/>
+  <ellipse cx="256" cy="318" rx="150" ry="64" fill="#F5EFE4"/>
+  <!-- food stack -->
+  <path d="M150 312 C150 262 200 236 256 236 C312 236 362 262 362 312 C340 336 172 336 150 312Z" fill="#9A6A43"/>
+  <g fill="#7A4F2E"><circle cx="196" cy="290" r="6"/><circle cx="226" cy="270" r="6"/><circle cx="262" cy="262" r="6"/><circle cx="300" cy="276" r="6"/><circle cx="324" cy="298" r="6"/><circle cx="244" cy="300" r="6"/><circle cx="282" cy="300" r="6"/></g>
+  <!-- egg -->
+  <ellipse cx="300" cy="248" rx="48" ry="26" fill="#FFFFFF"/><circle cx="306" cy="246" r="15" fill="#F4B63A"/>
+  <!-- carrot & greens -->
+  <path d="M182 248 L232 214" stroke="#E8792F" stroke-width="16" stroke-linecap="round"/>
+  <path d="M232 214 c10 -18 24 -24 36 -22 c-6 14 -20 22 -36 22Z" fill="#3E9B57"/>
+  <path d="M232 214 c-2 -20 6 -34 18 -40 c4 16 -4 30 -18 40Z" fill="#5BBF6A"/>
+  <!-- steam -->
+  <g stroke="#C9B89C" stroke-width="10" stroke-linecap="round" fill="none">
+    <path d="M206 168 c-14 -18 14 -30 0 -50"/><path d="M256 156 c-14 -18 14 -30 0 -50"/><path d="M306 168 c-14 -18 14 -30 0 -50"/>
+  </g>
+  <!-- coin -->
+  <circle cx="404" cy="408" r="46" fill="#2F8A4C"/><circle cx="404" cy="408" r="36" fill="none" stroke="#6CC68A" stroke-width="5"/>
+  <text x="404" y="424" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="46" fill="#FFFFFF">₴</text>
+</svg>

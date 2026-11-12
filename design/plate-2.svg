@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#FBF1E1"/>
+  <!-- shadow and plate -->
+  <ellipse cx="262" cy="276" rx="176" ry="176" fill="#E7DAC3"/>
+  <circle cx="256" cy="262" r="170" fill="#FFFFFF"/>
+  <circle cx="256" cy="262" r="134" fill="#FFFFFF" stroke="#EFE7D8" stroke-width="6"/>
+  <!-- buckwheat -->
+  <path d="M150 262 C150 196 214 168 256 196 C262 236 236 296 168 300 C156 292 150 278 150 262Z" fill="#9A6A43"/>
+  <g fill="#7A4F2E"><circle cx="186" cy="236" r="6"/><circle cx="206" cy="218" r="6"/><circle cx="214" cy="252" r="6"/><circle cx="182" cy="272" r="6"/><circle cx="232" cy="230" r="6"/><circle cx="200" cy="284" r="5"/></g>
+  <!-- chicken -->
+  <path d="M262 286 C282 248 340 236 366 262 C384 290 360 336 318 340 C284 342 254 320 262 286Z" fill="#E8A35A"/>
+  <path d="M290 282 C306 270 330 268 344 280" stroke="#C97E36" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M286 306 C302 296 326 296 340 306" stroke="#C97E36" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- cucumbers -->
+  <g><circle cx="300" cy="186" r="26" fill="#5BBF6A"/><circle cx="300" cy="186" r="18" fill="#D8F0C8"/>
+     <circle cx="340" cy="206" r="26" fill="#5BBF6A"/><circle cx="340" cy="206" r="18" fill="#D8F0C8"/></g>
+  <!-- tomato -->
+  <circle cx="214" cy="338" r="32" fill="#E5483B"/><path d="M214 312 l-10 -8 M214 312 l10 -8 M214 312 v-12" stroke="#2F8A4C" stroke-width="6" stroke-linecap="round"/>
+  <!-- herb -->
+  <path d="M246 360 C262 344 286 344 296 360 C280 372 260 372 246 360Z" fill="#3E9B57"/>
+  <!-- price tag -->
+  <g transform="rotate(-14 392 120)">
+    <rect x="336" y="88" width="120" height="66" rx="18" fill="#B3264F"/>
+    <circle cx="352" cy="121" r="7" fill="#FBF1E1"/>
+    <text x="406" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="46" fill="#FBF1E1">₴</text>
+  </g>
+</svg>

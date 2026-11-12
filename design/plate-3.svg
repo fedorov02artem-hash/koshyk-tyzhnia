@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#37A05A"/><stop offset="1" stop-color="#257A43"/></linearGradient></defs>
+  <rect width="512" height="512" rx="112" fill="url(#g3)"/>
+  <circle cx="256" cy="268" r="168" fill="#1D5F35" opacity=".35"/>
+  <circle cx="256" cy="256" r="168" fill="#FFFDF8"/>
+  <!-- 7 day dots on the rim, today highlighted -->
+  <g fill="#D9CFBE">
+    <circle cx="256" cy="108" r="10"/><circle cx="372" cy="164" r="10"/><circle cx="400" cy="290" r="10"/>
+    <circle cx="320" cy="390" r="10"/><circle cx="192" cy="390" r="10"/><circle cx="112" cy="290" r="10"/>
+  </g>
+  <circle cx="140" cy="164" r="14" fill="#B3264F"/>
+  <!-- bowl of borshch, top view -->
+  <circle cx="256" cy="262" r="104" fill="#F3EDE1"/>
+  <circle cx="256" cy="262" r="84" fill="#B3264F"/>
+  <circle cx="256" cy="262" r="84" fill="none" stroke="#8E1C3E" stroke-width="6"/>
+  <ellipse cx="262" cy="256" rx="30" ry="22" fill="#FFF8EC"/>
+  <g fill="#3E9B57"><ellipse cx="226" cy="300" rx="10" ry="5" transform="rotate(-30 226 300)"/><ellipse cx="298" cy="292" rx="10" ry="5" transform="rotate(25 298 292)"/><ellipse cx="236" cy="222" rx="9" ry="5" transform="rotate(40 236 222)"/><ellipse cx="290" cy="224" rx="8" ry="4"/></g>
+  <g fill="#E8792F"><rect x="206" y="250" width="16" height="6" rx="3" transform="rotate(20 214 253)"/><rect x="300" y="262" width="16" height="6" rx="3" transform="rotate(-25 308 265)"/></g>
+  <!-- spoon -->
+  <path d="M372 372 L420 420" stroke="#FBF1E1" stroke-width="14" stroke-linecap="round"/>
+  <ellipse cx="356" cy="356" rx="22" ry="30" transform="rotate(-45 356 356)" fill="#FBF1E1"/>
+</svg>

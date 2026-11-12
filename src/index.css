@@ -260,3 +260,8 @@ button:disabled { opacity: 0.4; cursor: default; }
 .store-logo.img { width: 100%; max-width: 150px; height: 60px; object-fit: contain; background: none; border-radius: 0; padding: 0; margin: 4px 0 8px; }
 .store-logo.sm.img { width: 76px; height: 36px; margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 4px 6px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.choice.row { flex-direction: row; align-items: center; justify-content: space-between; }
+.choice .tick { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: #fff; font-size: 0.85rem; font-weight: 800; }
+.choice.on .tick { background: var(--accent); border-color: var(--accent); }
+.wizard .chips { margin-top: 4px; }
+.wizard > .progress { flex: none; }

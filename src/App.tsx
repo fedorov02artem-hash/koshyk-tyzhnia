@@ -44,6 +44,7 @@ export default function App() {
   const [state, setState] = useState<Saved>(load)
   const [error, setError] = useState<string>()
   const [menuTab, setMenuTab] = useState<MenuTab>('week')
+  const [setupQ, setSetupQ] = useState(0)
   const { step, household, grid } = state
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function App() {
   }
 
   const go = (step: Step, menuTab?: MenuTab) => {
+    if (step === 'setup') setSetupQ(0)
     setState((st) => ({ ...st, step }))
     if (menuTab) setMenuTab(menuTab)
     window.scrollTo(0, 0)
@@ -99,7 +101,13 @@ export default function App() {
     <div className={onboarding ? 'app' : 'app with-tabs'}>
       <header className="topbar">
         {onboarding ? (
-          <button className="icon" aria-label="Назад" onClick={() => go(back[step] ?? 'home')}>
+          <button className="icon" aria-label="Назад" onClick={() => {
+              if (step === 'setup' && setupQ > 0) setSetupQ(setupQ - 1)
+              else if (step === 'people') {
+                go('setup')
+                setSetupQ(2)
+              } else go(back[step] ?? 'home')
+            }}>
             <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         ) : (
@@ -134,7 +142,7 @@ export default function App() {
             onNext={() => (grid ? buildMenu(household) : go('setup'))}
           />
         )}
-        {step === 'setup' && <SetupStep household={household} onChange={setHousehold} onNext={() => go('people')} />}
+        {step === 'setup' && <SetupStep household={household} q={setupQ} setQ={setSetupQ} onChange={setHousehold} onNext={() => go('people')} />}
         {step === 'people' && <PeopleStep household={household} onChange={setHousehold} onDone={buildMenu} error={error} />}
         {step === 'menu' && plan && (
           <MenuStep

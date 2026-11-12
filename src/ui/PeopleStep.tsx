@@ -300,7 +300,7 @@ const GOAL_HINTS: Record<Goal, string> = {
   gain: 'Трохи більше калорій і білка',
 }
 
-function Choices<T extends string>({ options, value, onPick }: { options: { value: T; title: string; hint?: string }[]; value?: T; onPick: (v: T) => void }) {
+export function Choices<T extends string>({ options, value, onPick }: { options: { value: T; title: string; hint?: string }[]; value?: T; onPick: (v: T) => void }) {
   return (
     <div className="choices">
       {options.map((o) => (
@@ -325,7 +325,7 @@ function BigInput({ value, onChange, onEnter, autoFocus }: { value: string; onCh
   )
 }
 
-function BigNumber({ value, unit, onChange, onEnter, autoFocus }: { value: number; unit: string; onChange: (v: number) => void; onEnter: () => void; autoFocus?: boolean }) {
+export function BigNumber({ value, unit, onChange, onEnter, autoFocus }: { value: number; unit: string; onChange: (v: number) => void; onEnter: () => void; autoFocus?: boolean }) {
   return (
     <div className="big-number">
       <input

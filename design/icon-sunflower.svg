@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#FBF1E1"/>
+  <g fill="#F4B63A">
+    <ellipse cx="256" cy="146" rx="38" ry="62"/><ellipse cx="256" cy="366" rx="38" ry="62"/>
+    <ellipse cx="146" cy="256" rx="62" ry="38"/><ellipse cx="366" cy="256" rx="62" ry="38"/>
+    <ellipse cx="178" cy="178" rx="38" ry="62" transform="rotate(-45 178 178)"/><ellipse cx="334" cy="334" rx="38" ry="62" transform="rotate(-45 334 334)"/>
+    <ellipse cx="334" cy="178" rx="38" ry="62" transform="rotate(45 334 178)"/><ellipse cx="178" cy="334" rx="38" ry="62" transform="rotate(45 178 334)"/>
+  </g>
+  <circle cx="256" cy="256" r="78" fill="#6B3E23"/>
+  <text x="256" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="104" fill="#FBF1E1">₴</text>
+</svg>

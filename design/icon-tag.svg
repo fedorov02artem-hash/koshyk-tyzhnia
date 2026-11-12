@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#FBF1E1"/>
+  <path d="M256 180 C220 140 130 150 122 250 C114 350 190 432 256 410 C322 432 398 350 390 250 C382 150 292 140 256 180Z" fill="#E5483B"/>
+  <path d="M256 186 C254 150 262 120 280 98" stroke="#6B3E23" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <path d="M270 140 C290 100 340 92 368 108 C350 146 304 156 270 140Z" fill="#5BBF6A"/>
+  <rect x="268" y="292" width="150" height="86" rx="20" fill="#2F8A4C" transform="rotate(-12 343 335)"/>
+  <text x="343" y="356" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="58" fill="#FBF1E1" transform="rotate(-12 343 335)">₴</text>
+</svg>

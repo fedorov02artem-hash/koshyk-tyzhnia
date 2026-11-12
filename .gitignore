@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Store logos are third-party trademarks: kept local, not published
+public/stores/

@@ -46,7 +46,7 @@ export function HomeScreen({ household: h, plan, onStart, onOpenWeek, onRegenera
         {h.stores.map((id) => (
           <span key={id} title={STORES.find((s) => s.id === id)!.name}><StoreLogo id={id} small /></span>
         ))}
-        <button className="ghost" onClick={onStart}>Змінити магазини</button>
+        <button className="ghost" onClick={onStart}>Змінити</button>
       </div>
       <Prices household={h} plan={plan} onRegenerate={onRegenerate} />
     </section>

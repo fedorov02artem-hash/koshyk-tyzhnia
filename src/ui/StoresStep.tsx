@@ -45,7 +45,7 @@ export function StoresStep({ selected, onChange, onNext }: Props) {
                 onClick={() => toggle(s.id)}
               >
                 <StoreLogo id={s.id} />
-                <strong>{s.name}</strong>
+                <strong className="sr-only">{s.name}</strong>
                 <span className="muted small">{m.hint}</span>
                 {on && <span className="store-check" aria-hidden>{selected.indexOf(s.id) + 1}</span>}
               </button>

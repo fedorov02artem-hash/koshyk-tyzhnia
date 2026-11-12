@@ -86,7 +86,8 @@ export interface Person {
 
 export interface Household {
   weeklyBudget: number
-  store: StoreId | 'cheapest'
+  /** Up to three stores the household shops at. The plan is priced at the cheapest of them. */
+  stores: StoreId[]
   diet: DietStyle
   meals: MealSlot[]
   people: Person[]

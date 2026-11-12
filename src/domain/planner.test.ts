@@ -20,7 +20,7 @@ const adult = (over: Partial<Person> = {}): Person => ({
 
 const household = (over: Partial<Household> = {}): Household => ({
   weeklyBudget: 2500,
-  store: 'cheapest',
+  stores: ['atb', 'silpo', 'novus'],
   diet: 'omnivore',
   meals: ['breakfast', 'lunch', 'dinner'],
   people: [adult(), adult({ name: 'Андрій', sex: 'male', heightCm: 180, weightKg: 82 })],

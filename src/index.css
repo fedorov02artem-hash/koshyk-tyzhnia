@@ -248,3 +248,33 @@ button:disabled { opacity: 0.4; cursor: default; }
 .shopping li.done .grow > span:first-child { text-decoration: line-through; color: var(--muted); }
 .card { border-radius: var(--radius); }
 .choice, .option { border-radius: var(--radius); }
+
+/* Home and store picker */
+.dots { display: flex; gap: 6px; }
+.dots span { width: 22px; height: 4px; border-radius: 99px; background: var(--line); }
+.dots span.on { background: var(--accent); }
+.home-hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 8px 8px 0; }
+.hero-icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 12px 30px rgb(47 138 76 / 0.25); margin-bottom: 8px; }
+.home-hero h1 { font-size: 1.9rem; margin: 0; }
+.home-hero > p { max-width: 340px; }
+.hero-points { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 8px; text-align: left; width: 100%; max-width: 340px; }
+.hero-points li { display: flex; align-items: center; gap: 12px; background: var(--soft); border-radius: 14px; padding: 10px 14px; font-weight: 600; }
+.hero-points span { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 0.85rem; flex: none; }
+.primary.big { width: 100%; max-width: 340px; padding: 16px; font-size: 1.1rem; border-radius: 16px; margin-top: 14px; }
+
+.store-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+@media (min-width: 520px) { .store-grid { grid-template-columns: repeat(3, 1fr); } }
+.store-tile { position: relative; border: 1.5px solid var(--line); background: var(--surface); border-radius: var(--radius); padding: 14px 10px 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.store-tile.on { border-color: var(--accent); background: var(--accent-soft); }
+.store-tile:disabled { opacity: 0.4; }
+.store-logo { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; margin-bottom: 6px; }
+.store-logo.sm { width: 40px; height: 40px; border-radius: 12px; font-size: 0.95rem; margin: 0; }
+.store-check { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 0.8rem; font-weight: 800; display: grid; place-items: center; }
+.store-row { display: flex; align-items: center; gap: 8px; }
+.store-row .ghost { margin-left: auto; }
+
+.week-banner { border: 0; text-align: left; background: var(--accent); color: #fff; border-radius: var(--radius); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; }
+.week-banner div { display: flex; flex-direction: column; gap: 2px; }
+.week-banner strong { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; }
+.week-banner .small { opacity: 0.85; }
+.week-banner .arrow { font-size: 1.6rem; }

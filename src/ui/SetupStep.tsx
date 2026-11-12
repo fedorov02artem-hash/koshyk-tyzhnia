@@ -1,4 +1,3 @@
-import { STORES } from '../domain/products'
 import { SLOT_ORDER } from '../domain/planner'
 import type { DietStyle, Household, MealSlot } from '../domain/types'
 import { DIET_LABELS, SLOT_LABELS } from './labels'
@@ -18,7 +17,7 @@ export function SetupStep({ household: h, onChange, onNext }: Props) {
   return (
     <section className="stack">
       <div>
-        <h1>Ваш тиждень</h1>
+        <h1>Бюджет і звички</h1>
         <p className="muted">Вкажіть бюджет і звички. Меню на 7 днів підлаштується під них.</p>
       </div>
 
@@ -41,20 +40,6 @@ export function SetupStep({ household: h, onChange, onNext }: Props) {
           {[1000, 1500, 2000, 3000, 4000].map((v) => (
             <button key={v} className={v === h.weeklyBudget ? 'chip on' : 'chip'} onClick={() => onChange({ ...h, weeklyBudget: v })}>
               {v} ₴
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="card">
-        <span className="label">Де купуєте</span>
-        <div className="chips">
-          <button className={h.store === 'cheapest' ? 'chip on' : 'chip'} onClick={() => onChange({ ...h, store: 'cheapest' })}>
-            Де найдешевше
-          </button>
-          {STORES.map((s) => (
-            <button key={s.id} className={h.store === s.id ? 'chip on' : 'chip'} onClick={() => onChange({ ...h, store: s.id })}>
-              {s.name}
             </button>
           ))}
         </div>

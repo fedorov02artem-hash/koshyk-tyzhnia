@@ -96,16 +96,13 @@ function Week({ household: h, plan, onSwap }: { household: Household; plan: Plan
   )
 }
 
-function Prices({ household: h, plan, onRegenerate }: { household: Household; plan: PlanSummary; onRegenerate: () => void }) {
+export function Prices({ household: h, plan, onRegenerate }: { household: Household; plan: PlanSummary; onRegenerate: () => void }) {
   const share = Math.min(plan.cost / Math.max(h.weeklyBudget, 1), 1)
   const over = plan.overBudget > 0
   const avg = averageDay(h, plan.grid)
   const max = plan.storeTotals[plan.storeTotals.length - 1].total
   return (
     <section className="stack">
-      <div className="page-head">
-        <h1>Бюджет і ціни</h1>
-      </div>
       <div className="card summary">
         <span className="muted small">Кошик на тиждень · {storeName(plan.store)}</span>
         <div className="total">{uah(plan.cost)}</div>

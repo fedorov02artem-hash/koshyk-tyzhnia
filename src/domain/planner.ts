@@ -92,12 +92,13 @@ export function summarize(h: Household, grid: MenuGrid): PlanSummary {
     packs: Math.ceil(g / PRODUCT_BY_ID[productId].packGrams - 1e-9),
   }))
 
-  const storeTotals = STORES.map((s) => ({
+  const chosen = STORES.filter((s) => h.stores.length === 0 || h.stores.includes(s.id))
+  const storeTotals = chosen.map((s) => ({
     store: s.id,
     total: round2(shopping.reduce((sum, it) => sum + it.packs * packPrice(it.productId, s.id), 0)),
   })).sort((a, b) => a.total - b.total)
 
-  const store = h.store === 'cheapest' ? storeTotals[0].store : h.store
+  const store = storeTotals[0].store
   const cost = storeTotals.find((t) => t.store === store)!.total
 
   const mealCosts = grid.map((day, d) => {

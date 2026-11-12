@@ -3,6 +3,7 @@ import { newPerson } from '../domain/people'
 import { dailyKcal } from '../domain/nutrition'
 import { PRODUCTS, PRODUCT_BY_ID } from '../domain/products'
 import type { Activity, Allergen, Goal, Household, Person, Sex } from '../domain/types'
+import { EMOJI, Tiles } from './Tiles'
 import { ACTIVITY_LABELS, ALLERGEN_LABELS, GOAL_LABELS, SEX_LABELS } from './labels'
 
 interface Props {
@@ -139,10 +140,10 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       title = `${who}: стать`
       hint = 'Потрібно для розрахунку норми калорій.'
       body = (
-        <Choices
-          options={(Object.keys(SEX_LABELS) as Sex[]).map((s) => ({ value: s, title: SEX_LABELS[s] }))}
-          value={p.sex}
-          onPick={(sex) => choose({ sex })}
+        <Tiles
+          options={(Object.keys(SEX_LABELS) as Sex[]).map((s) => ({ value: s, title: SEX_LABELS[s], emoji: EMOJI.sex[s] }))}
+          selected={[p.sex]}
+          onToggle={(sex) => choose({ sex })}
         />
       )
       showNext = false
@@ -165,10 +166,10 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
     case 'activity':
       title = 'Скільки руху протягом дня?'
       body = (
-        <Choices
-          options={(Object.keys(ACTIVITY_LABELS) as Activity[]).map((a) => ({ value: a, title: ACTIVITY_LABELS[a], hint: ACTIVITY_HINTS[a] }))}
-          value={p.activity}
-          onPick={(activity) => choose({ activity })}
+        <Tiles
+          options={(Object.keys(ACTIVITY_LABELS) as Activity[]).map((a) => ({ value: a, title: ACTIVITY_LABELS[a], hint: ACTIVITY_HINTS[a], emoji: EMOJI.activity[a] }))}
+          selected={[p.activity]}
+          onToggle={(activity) => choose({ activity })}
         />
       )
       showNext = false
@@ -176,10 +177,10 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
     case 'goal':
       title = 'Яка мета?'
       body = (
-        <Choices
-          options={(Object.keys(GOAL_LABELS) as Goal[]).map((g) => ({ value: g, title: GOAL_LABELS[g], hint: GOAL_HINTS[g] }))}
-          value={p.goal}
-          onPick={(goal) => choose({ goal })}
+        <Tiles
+          options={(Object.keys(GOAL_LABELS) as Goal[]).map((g) => ({ value: g, title: GOAL_LABELS[g], hint: GOAL_HINTS[g], emoji: EMOJI.goal[g] }))}
+          selected={[p.goal]}
+          onToggle={(goal) => choose({ goal })}
         />
       )
       showNext = false
@@ -195,12 +196,13 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       ) : (
         <>
           <div className="norm-big">{dailyKcal({ ...p, manualKcal: undefined })} <span>ккал на день</span></div>
-          <Choices
+          <Tiles
             options={[
-              { value: 'ok', title: 'Підходить' },
-              { value: 'own', title: 'Знаю свою норму' },
+              { value: 'ok', title: 'Підходить', emoji: '👍' },
+              { value: 'own', title: 'Знаю свою норму', emoji: '✍️' },
             ]}
-            onPick={(v) => {
+            selected={[]}
+            onToggle={(v) => {
               if (v === 'ok') choose({ manualKcal: undefined })
               else {
                 update({ manualKcal: dailyKcal({ ...p, manualKcal: undefined }) })
@@ -217,17 +219,11 @@ function PersonWizard({ person: p, label, finishLabel, update, onExit, onFinish 
       title = 'Є алергії чи непереносимість?'
       hint = 'Оберіть усе, що підходить. Такі страви не потраплять у меню.'
       body = (
-        <div className="chips">
-          {(Object.keys(ALLERGEN_LABELS) as Allergen[]).map((a) => (
-            <button
-              key={a}
-              className={p.allergies.includes(a) ? 'chip warn' : 'chip'}
-              onClick={() => update({ allergies: p.allergies.includes(a) ? p.allergies.filter((x) => x !== a) : [...p.allergies, a] })}
-            >
-              {ALLERGEN_LABELS[a]}
-            </button>
-          ))}
-        </div>
+        <Tiles
+          options={(Object.keys(ALLERGEN_LABELS) as Allergen[]).map((a) => ({ value: a, title: ALLERGEN_LABELS[a], emoji: EMOJI.allergen[a] }))}
+          selected={p.allergies}
+          onToggle={(a) => update({ allergies: p.allergies.includes(a) ? p.allergies.filter((x) => x !== a) : [...p.allergies, a] })}
+        />
       )
       break
     case 'excluded':

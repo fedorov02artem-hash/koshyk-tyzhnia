@@ -1,7 +1,8 @@
 import { SLOT_ORDER } from '../domain/planner'
 import type { DietStyle, Household, MealSlot } from '../domain/types'
 import { DIET_LABELS, SLOT_LABELS } from './labels'
-import { BigNumber, Choices } from './PeopleStep'
+import { BigNumber } from './PeopleStep'
+import { EMOJI, Tiles } from './Tiles'
 
 export const SETUP_QUESTIONS = ['budget', 'diet', 'meals'] as const
 
@@ -49,10 +50,10 @@ export function SetupStep({ household: h, q, setQ, onChange, onNext }: Props) {
     title = 'Як ви харчуєтесь?'
     hint = 'Підберемо страви під ваш стиль.'
     body = (
-      <Choices
-        options={(Object.keys(DIET_LABELS) as DietStyle[]).map((d) => ({ value: d, title: DIET_LABELS[d].title, hint: DIET_LABELS[d].hint }))}
-        value={h.diet}
-        onPick={(diet) => {
+      <Tiles
+        options={(Object.keys(DIET_LABELS) as DietStyle[]).map((d) => ({ value: d, title: DIET_LABELS[d].title, hint: DIET_LABELS[d].hint, emoji: EMOJI.diet[d] }))}
+        selected={[h.diet]}
+        onToggle={(diet) => {
           onChange({ ...h, diet })
           next()
         }}
@@ -63,14 +64,11 @@ export function SetupStep({ household: h, q, setQ, onChange, onNext }: Props) {
     title = 'Які прийоми їжі планувати?'
     hint = 'Оберіть усе, що потрібно. Супи й рагу готуються одразу на два дні.'
     body = (
-      <div className="choices">
-        {SLOT_ORDER.map((s) => (
-          <button key={s} className={h.meals.includes(s) ? 'choice on row' : 'choice row'} onClick={() => toggleMeal(s)}>
-            <strong>{SLOT_LABELS[s]}</strong>
-            <span className="tick" aria-hidden>{h.meals.includes(s) ? '✓' : ''}</span>
-          </button>
-        ))}
-      </div>
+      <Tiles
+        options={SLOT_ORDER.map((m) => ({ value: m, title: SLOT_LABELS[m], emoji: EMOJI.meal[m] }))}
+        selected={h.meals}
+        onToggle={toggleMeal}
+      />
     )
   }
 

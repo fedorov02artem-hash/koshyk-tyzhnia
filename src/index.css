@@ -265,3 +265,23 @@ button:disabled { opacity: 0.4; cursor: default; }
 .choice.on .tick { background: var(--accent); border-color: var(--accent); }
 .wizard .chips { margin-top: 4px; }
 .wizard > .progress { flex: none; }
+
+/* Picture tiles, two per row */
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tile {
+  position: relative; border: 2px solid #e6e6ea; background: #f3f3f6; border-radius: 22px;
+  padding: 18px 10px 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.tile:active { transform: scale(0.98); }
+.tile.on { border-color: #1f4d33; background: #eef3ef; }
+.tile.on strong { color: #1f4d33; }
+.tile-art { font-size: 3.4rem; line-height: 1.1; filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.14)); }
+.tile strong { font-size: 1.02rem; font-weight: 700; }
+.tile-hint { font-size: 0.8rem; color: var(--muted); line-height: 1.3; }
+.tile-check { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 50%; background: #1f4d33; color: #fff; display: grid; place-items: center; font-size: 0.85rem; font-weight: 800; }
+.store-tile { background: #f3f3f6; border: 2px solid #e6e6ea; border-radius: 22px; }
+.store-tile.on { border-color: #1f4d33; background: #eef3ef; }
+.store-check { background: #1f4d33; width: 28px; height: 28px; }
+.app:has(.wizard-top) .topbar { display: none; }
+.wizard-top { padding-top: 14px; }

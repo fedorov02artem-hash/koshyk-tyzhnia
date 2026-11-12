@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light" />
+<title>Кошик тижня</title>
+<link rel="icon" type="image/svg+xml" href="./icon.svg" />
+<style>
+  :root { --bg: #eef0ec; color-scheme: light; }
+  html, body { margin: 0; height: 100%; background: var(--bg); font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  .stage { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px 16px; box-sizing: border-box; }
+  .phone {
+    position: relative; width: 390px; height: 844px; max-height: calc(100vh - 48px);
+    border-radius: 54px; background: #111; padding: 12px; box-sizing: border-box;
+    box-shadow: 0 30px 80px rgb(0 0 0 / 0.25), inset 0 0 0 2px #333;
+  }
+  .screen { width: 100%; height: 100%; border-radius: 42px; overflow: hidden; background: #fff; position: relative; }
+  .notch { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 32px; background: #111; border-radius: 20px; z-index: 2; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; padding-top: 44px; box-sizing: border-box; background: #fff; }
+  /* On a real phone: just the app, full screen */
+  @media (max-width: 500px) {
+    .stage { padding: 0; }
+    .phone { width: 100%; height: 100vh; max-height: none; border-radius: 0; padding: 0; box-shadow: none; background: #fff; }
+    .screen { border-radius: 0; }
+    .notch { display: none; }
+    iframe { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="phone">
+      <div class="screen">
+        <div class="notch"></div>
+        <iframe src="./app.html" title="Кошик тижня"></iframe>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

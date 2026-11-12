@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { STORES } from '../domain/products'
 import type { StoreId } from '../domain/types'
 
@@ -43,7 +44,7 @@ export function StoresStep({ selected, onChange, onNext }: Props) {
                 disabled={!on && full}
                 onClick={() => toggle(s.id)}
               >
-                <span className="store-logo" style={{ background: m.bg, color: m.fg }}>{m.mark}</span>
+                <StoreLogo id={s.id} />
                 <strong>{s.name}</strong>
                 <span className="muted small">{m.hint}</span>
                 {on && <span className="store-check" aria-hidden>{selected.indexOf(s.id) + 1}</span>}
@@ -58,4 +59,14 @@ export function StoresStep({ selected, onChange, onNext }: Props) {
       </div>
     </section>
   )
+}
+
+/** Real logo from public/stores/<id>.png when present, otherwise our colour mark. */
+export function StoreLogo({ id, small }: { id: StoreId; small?: boolean }) {
+  const [failed, setFailed] = useState(false)
+  const m = STORE_MARK[id]
+  const cls = small ? 'store-logo sm' : 'store-logo'
+  if (!failed)
+    return <img className={cls + ' img'} src={`${import.meta.env.BASE_URL}stores/${id}.png`} alt="" onError={() => setFailed(true)} />
+  return <span className={cls} style={{ background: m.bg, color: m.fg }}>{m.mark}</span>
 }

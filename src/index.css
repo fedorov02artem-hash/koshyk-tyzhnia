@@ -278,3 +278,4 @@ button:disabled { opacity: 0.4; cursor: default; }
 .week-banner strong { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; }
 .week-banner .small { opacity: 0.85; }
 .week-banner .arrow { font-size: 1.6rem; }
+.store-logo.img { object-fit: contain; background: #fff; border: 1px solid var(--line); padding: 6px; }

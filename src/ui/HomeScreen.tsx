@@ -2,7 +2,7 @@ import type { PlanSummary } from '../domain/planner'
 import { STORES } from '../domain/products'
 import type { Household } from '../domain/types'
 import { Prices } from './MenuStep'
-import { STORE_MARK } from './StoresStep'
+import { StoreLogo } from './StoresStep'
 import { uah } from './labels'
 
 interface Props {
@@ -44,9 +44,7 @@ export function HomeScreen({ household: h, plan, onStart, onOpenWeek, onRegenera
       </button>
       <div className="store-row">
         {h.stores.map((id) => (
-          <span key={id} className="store-logo sm" style={{ background: STORE_MARK[id].bg, color: STORE_MARK[id].fg }} title={STORES.find((s) => s.id === id)!.name}>
-            {STORE_MARK[id].mark}
-          </span>
+          <span key={id} title={STORES.find((s) => s.id === id)!.name}><StoreLogo id={id} small /></span>
         ))}
         <button className="ghost" onClick={onStart}>Змінити магазини</button>
       </div>

@@ -3,9 +3,7 @@
   <!-- fork (left) and knife (right), mirrored around the centre, same height -->
   <g fill="#FBF1E1">
     <g transform="translate(78 0)">
-      <rect x="-18" y="150" width="6" height="54" rx="3"/><rect x="-8" y="150" width="6" height="54" rx="3"/>
-      <rect x="2" y="150" width="6" height="54" rx="3"/><rect x="12" y="150" width="6" height="54" rx="3"/>
-      <path d="M-18 198 H18 V212 C18 232 10 242 8 248 V354 a8 8 0 0 1 -16 0 V248 C-10 242 -18 232 -18 212 Z"/>
+      <path d="M-22 156 a5 5 0 0 1 10 0 V194 q0 6 3.5 6 q3.5 0 3.5 -6 V156 a5 5 0 0 1 10 0 V194 q0 6 3.5 6 q3.5 0 3.5 -6 V156 a5 5 0 0 1 10 0 V206 C22 230 12 240 8 252 V354 a8 8 0 0 1 -16 0 V252 C-12 240 -22 230 -22 206 Z"/>
     </g>
     <g transform="translate(434 0)">
       <path d="M-8 150 C16 166 18 222 8 250 H-8 Z"/>

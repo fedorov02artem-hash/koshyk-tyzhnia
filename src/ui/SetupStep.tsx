@@ -5,7 +5,7 @@ import { uah } from './labels'
 import { Wheel } from './Wheel'
 import { EMOJI, Tiles } from './Tiles'
 
-export const SETUP_QUESTIONS = ['kitchen', 'budget', 'diet', 'meals'] as const
+export const SETUP_QUESTIONS = ['budget', 'diet', 'meals', 'kitchen'] as const
 const ALL_APPLIANCES = Object.keys(APPLIANCE_LABELS) as Appliance[]
 
 interface Props {
@@ -102,7 +102,7 @@ export function SetupStep({ household: h, q, setQ, onChange, onNext }: Props) {
       </div>
       {showNext && (
         <button className="primary" disabled={!canNext} onClick={next}>
-          {question === 'meals' ? 'Далі: хто їстиме' : 'Далі'}
+          {q === SETUP_QUESTIONS.length - 1 ? 'Далі: хто їстиме' : 'Далі'}
         </button>
       )}
     </section>

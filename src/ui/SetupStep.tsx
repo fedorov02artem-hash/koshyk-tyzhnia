@@ -1,11 +1,12 @@
 import { SLOT_ORDER } from '../domain/planner'
-import type { DietStyle, Household, MealSlot } from '../domain/types'
-import { DIET_LABELS, SLOT_LABELS } from './labels'
+import type { Appliance, DietStyle, Household, MealSlot } from '../domain/types'
+import { APPLIANCE_LABELS, DIET_LABELS, SLOT_LABELS } from './labels'
 import { uah } from './labels'
 import { Wheel } from './Wheel'
 import { EMOJI, Tiles } from './Tiles'
 
-export const SETUP_QUESTIONS = ['budget', 'diet', 'meals'] as const
+export const SETUP_QUESTIONS = ['kitchen', 'budget', 'diet', 'meals'] as const
+const ALL_APPLIANCES = Object.keys(APPLIANCE_LABELS) as Appliance[]
 
 interface Props {
   household: Household
@@ -31,7 +32,20 @@ export function SetupStep({ household: h, q, setQ, onChange, onNext }: Props) {
   let showNext = true
   let canNext = true
 
-  if (question === 'budget') {
+  if (question === 'kitchen') {
+    const kitchen = h.kitchen ?? ALL_APPLIANCES
+    title = 'Що є на кухні?'
+    hint = 'Підберемо страви, які ви точно зможете приготувати.'
+    body = (
+      <Tiles
+        compact
+        options={ALL_APPLIANCES.map((a) => ({ value: a, title: APPLIANCE_LABELS[a], emoji: EMOJI.appliance[a] }))}
+        selected={kitchen}
+        onToggle={(a) => onChange({ ...h, kitchen: kitchen.includes(a) ? kitchen.filter((x) => x !== a) : [...kitchen, a] })}
+      />
+    )
+    canNext = kitchen.length > 0
+  } else if (question === 'budget') {
     title = 'Скільки готові витратити на тиждень?'
     hint = 'На продукти для всіх, хто їстиме.'
     body = (

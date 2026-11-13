@@ -32,6 +32,7 @@ export const EMOJI = {
   goal: { save: '🍽️', lose: '🥗', keep: '⚖️', gain: '💪' },
   diet: { omnivore: '🍗', vegetarian: '🧀', vegan: '🥦', highProtein: '🥩' },
   allergen: { gluten: '🍞', milk: '🥛', eggs: '🥚', nuts: '🌰', peanuts: '🥜', fish: '🐟', shellfish: '🦐', soy: '🫘', sesame: '🥯' },
+  appliance: { stove: '🔥', oven: '🥧', microwave: '⏲️', airfryer: '🌪️', multicooker: '🫕', blender: '🥤' },
   meal: { breakfast: '🍳', lunch: '🍲', dinner: '🍝', snack: '🍎' },
 } as const
 

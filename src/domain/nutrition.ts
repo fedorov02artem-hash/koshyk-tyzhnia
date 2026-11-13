@@ -1,5 +1,5 @@
 import { PRODUCT_BY_ID } from './products'
-import type { Activity, Allergen, DietStyle, Dish, Goal, Person } from './types'
+import type { Activity, Allergen, Appliance, DietStyle, Dish, Goal, Person } from './types'
 
 export interface Nutrition {
   kcal: number
@@ -46,8 +46,27 @@ export function proteinShare(n: Nutrition): number {
 }
 
 /** Can anyone in the household eat this dish? Allergies and excluded products of all people count. */
-export function dishAllowed(dish: Dish, people: Person[], diet: DietStyle): boolean {
+/** Can this dish be made with the appliances at home? */
+export function dishCookable(dish: Dish, kitchen?: Appliance[]): boolean {
+  if (!kitchen) return true
+  const has = (a: Appliance) => kitchen.includes(a)
+  const hob = has('stove') || has('multicooker')
+  const micro = !!dish.micro && has('microwave')
+  switch (dish.tool ?? 'stove') {
+    case 'none':
+      return true
+    case 'stove':
+      return hob || micro
+    case 'oven':
+      return has('oven') || has('airfryer') || micro
+    case 'blender':
+      return has('blender') && (dish.kind === 'snack' || hob)
+  }
+}
+
+export function dishAllowed(dish: Dish, people: Person[], diet: DietStyle, kitchen?: Appliance[]): boolean {
   if (!dishFitsDiet(dish, diet)) return false
+  if (!dishCookable(dish, kitchen)) return false
   const allergens = dishAllergens(dish)
   for (const person of people) {
     if (person.allergies.some((a) => allergens.has(a))) return false

@@ -40,7 +40,7 @@ export interface PlanSummary {
 }
 
 function pools(h: Household): Record<MealSlot, Dish[]> {
-  const allowed = DISHES.filter((d) => dishAllowed(d, h.people, h.diet))
+  const allowed = DISHES.filter((d) => dishAllowed(d, h.people, h.diet, h.kitchen))
   return {
     breakfast: allowed.filter((d) => d.kind === 'breakfast'),
     lunch: allowed.filter((d) => d.kind === 'soup' || d.kind === 'main'),

@@ -1,4 +1,13 @@
-import type { Activity, Allergen, DietStyle, Goal, MealSlot, Sex } from '../domain/types'
+import type { Activity, Allergen, Appliance, DietStyle, Goal, MealSlot, Sex } from '../domain/types'
+
+export const APPLIANCE_LABELS: Record<Appliance, string> = {
+  stove: 'Плита',
+  oven: 'Духовка',
+  microwave: 'Мікрохвильовка',
+  airfryer: 'Аерогриль',
+  multicooker: 'Мультиварка',
+  blender: 'Блендер',
+}
 
 export const ALLERGEN_LABELS: Record<Allergen, string> = {
   gluten: 'Глютен',

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Household } from './domain/types'
 import { newPerson } from './domain/people'
 import { NoDishesError, planWeek, summarize, swapMeal, type MenuGrid } from './domain/planner'
-import { SetupStep } from './ui/SetupStep'
+import { SETUP_QUESTIONS, SetupStep } from './ui/SetupStep'
 import { PeopleStep } from './ui/PeopleStep'
 import { MenuStep, type MenuTab } from './ui/MenuStep'
 import { SLOT_LABELS } from './ui/labels'
@@ -26,6 +26,7 @@ const initial: Saved = {
     stores: [],
     diet: 'omnivore',
     meals: ['breakfast', 'lunch', 'dinner'],
+    kitchen: ['stove', 'oven', 'microwave'],
     people: [newPerson(1)],
     surveyed: false,
   },
@@ -68,7 +69,7 @@ export default function App() {
       window.scrollTo(0, 0)
     } catch (e) {
       if (e instanceof NoDishesError)
-        setError(`Для «${SLOT_LABELS[e.slot]}» не залишилось страв з такими обмеженнями. Приберіть частину виключень.`)
+        setError(`Для «${SLOT_LABELS[e.slot]}» не залишилось страв з такими обмеженнями і технікою. Приберіть частину виключень або додайте техніку.`)
       else throw e
     }
   }
@@ -105,7 +106,7 @@ export default function App() {
               if (step === 'setup' && setupQ > 0) setSetupQ(setupQ - 1)
               else if (step === 'people') {
                 go('setup')
-                setSetupQ(2)
+                setSetupQ(SETUP_QUESTIONS.length - 1)
               } else go(back[step] ?? 'home')
             }}>
             <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>

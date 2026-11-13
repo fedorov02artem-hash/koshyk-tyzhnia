@@ -118,3 +118,33 @@ describe('planner', () => {
     expect(plan.cost).toBe(Math.min(...plan.storeTotals.map((t) => t.total)))
   })
 })
+
+describe('variety and kitchen', () => {
+  it('has a large dish base for every meal and diet', () => {
+    const count = (kind: string, diet: 'omnivore' | 'vegetarian' | 'vegan') => DISHES.filter((d) => d.kind === kind && dishFitsDiet(d, diet)).length
+    expect(DISHES.length).toBeGreaterThanOrEqual(110)
+    expect(count('breakfast', 'omnivore')).toBeGreaterThanOrEqual(25)
+    expect(count('main', 'vegetarian')).toBeGreaterThanOrEqual(15)
+    expect(count('main', 'vegan')).toBeGreaterThanOrEqual(8)
+  })
+
+  it('a full week with snacks repeats almost nothing', () => {
+    const p = planWeek(household({ meals: ['breakfast', 'lunch', 'dinner', 'snack'], weeklyBudget: 4000 }), 7)
+    const ids = p.grid.flatMap((d, day) => Object.entries(d).filter(([s]) => !isLeftover(p.grid, day, s as never)).map(([, id]) => id))
+    expect(new Set(ids).size).toBeGreaterThanOrEqual(ids.length - 2)
+  })
+
+  it('without an oven or air fryer no baked dishes are planned', () => {
+    const p = planWeek(household({ kitchen: ['stove'] }), 3)
+    for (const d of p.grid) for (const id of Object.values(d)) expect(DISH_BY_ID[id!].tool, id).not.toBe('oven')
+  })
+
+  it('with only a microwave the week is built from no-cook and microwave dishes', () => {
+    const p = planWeek(household({ kitchen: ['microwave'], meals: ['breakfast', 'snack'] }), 3)
+    for (const d of p.grid)
+      for (const id of Object.values(d)) {
+        const dish = DISH_BY_ID[id!]
+        expect(dish.tool === 'none' || dish.micro, id).toBe(true)
+      }
+  })
+})

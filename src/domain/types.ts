@@ -56,6 +56,11 @@ export interface Ingredient {
   grams: number
 }
 
+export type Appliance = 'stove' | 'oven' | 'microwave' | 'airfryer' | 'multicooker' | 'blender'
+
+/** What a dish needs: no cooking, a hob, an oven, or a blender (cream soups also need a hob). */
+export type Tool = 'none' | 'stove' | 'oven' | 'blender'
+
 export interface Dish {
   id: string
   name: string
@@ -63,6 +68,10 @@ export interface Dish {
   minutes: number
   /** Can be cooked once and eaten two days in a row. */
   batch?: boolean
+  /** Defaults to 'stove'. */
+  tool?: Tool
+  /** Can also be made in a microwave. */
+  micro?: boolean
   ingredients: Ingredient[]
 }
 
@@ -93,6 +102,8 @@ export interface Household {
   stores: StoreId[]
   diet: DietStyle
   meals: MealSlot[]
+  /** Kitchen appliances at home. Missing means "everything" (older saved data). */
+  kitchen?: Appliance[]
   people: Person[]
   /** Questionnaire completed for the current number of people. */
   surveyed?: boolean
